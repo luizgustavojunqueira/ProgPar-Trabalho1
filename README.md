@@ -25,7 +25,7 @@ Na proposta do trabalho, é pedido para implementar três versões do algoritmo 
 
 Para a implementação do algoritmo, foi utilizado a linguagem de programação C/C++ e a biblioteca Pthread. O algoritmo foi implementado em três versões: serial, paralela com divisão fixa e paralela com balanceamento de carga.
 
-Os algoritmos foram testados com os datasets presentes na pasta `datasets`. Os resultados foram comparados com o seguinte gabarito para cada valor de K:
+Os algoritmos foram testados com os datasets presentes na pasta `graph_datasets`. Os resultados foram comparados com o seguinte gabarito para cada valor de K:
 
 | Dataset    | K   | Cliques    |
 | ---------- | --- | ---------- |

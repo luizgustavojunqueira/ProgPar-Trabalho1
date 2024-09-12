@@ -5,7 +5,7 @@ using namespace std;
 
 class Graph {
 public:
-  Graph(string filename);
+  Graph(string filename, int debug);
   void print();
 
 private:

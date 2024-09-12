@@ -3,7 +3,7 @@
 #include <iostream>
 #include <map>
 
-Graph::Graph(string filename) {
+Graph::Graph(string filename, int debug) {
   ifstream file(filename);
   map<int, int> vertex_map;
   int num_vertices = 0;
@@ -18,6 +18,11 @@ Graph::Graph(string filename) {
       vertex_map[w] = num_vertices++;
     }
 
+    if (debug) {
+      cout << "Adding edge between " << v << " and " << w << endl;
+      cout << "Which are remapped to " << vertex_map[v] << " and "
+           << vertex_map[w] << endl;
+    }
 
     this->add_edge(vertex_map[v], vertex_map[w], num_vertices);
   }

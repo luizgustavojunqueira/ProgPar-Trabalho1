@@ -1,5 +1,4 @@
 #include "graph.hpp"
-#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -7,36 +6,39 @@
 Graph::Graph(string filename) {
   ifstream file(filename);
   map<int, int> vertex_map;
-  vector<int> unique_vertices;
   int num_vertices = 0;
 
   int v, w;
   while (file >> v >> w) {
     if (vertex_map.find(v) == vertex_map.end()) {
-      unique_vertices.push_back(v);
       vertex_map[v] = num_vertices++;
     }
+
     if (vertex_map.find(w) == vertex_map.end()) {
-      unique_vertices.push_back(w);
       vertex_map[w] = num_vertices++;
     }
+
+
+    this->add_edge(vertex_map[v], vertex_map[w], num_vertices);
   }
 
-  num_vertices = vertex_map.size();
-
-  sort(unique_vertices.begin(), unique_vertices.end());
-
   file.close();
+}
 
+void Graph::add_edge(int v, int w, int num_vertices) {
   this->adj_list.resize(num_vertices);
+  this->adj_list[v].push_back(w);
+  this->adj_list[w].push_back(v);
+}
 
-  file.open(filename);
-
-  while (file >> v >> w) {
-
-    this->adj_list[vertex_map[v]].push_back(vertex_map[w]);
-    this->adj_list[vertex_map[w]].push_back(vertex_map[v]);
+void Graph::print() {
+  for (long unsigned int i = 0; i < this->adj_list.size(); i++) {
+    cout << i << ": ";
+    for (long unsigned int j = 0; j < this->adj_list[i].size(); j++) {
+      cout << this->adj_list[i][j] << " ";
+    }
+    cout << endl;
   }
 
-  file.close();
+  cout << "This graph has " << this->adj_list.size() << " vertices." << endl;
 }

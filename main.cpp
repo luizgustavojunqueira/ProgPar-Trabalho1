@@ -3,19 +3,20 @@
 
 int main(int argc, char *argv[]) {
 
-  if (argc < 2) {
-    cout << "Usage: ./main <filename>" << endl;
+  if (argc < 3) {
+    cout << "Usage: ./main <filename> <k>" << endl;
     return 1;
   }
 
   int debug = 0;
 
-  if (argc == 3 && (string(argv[2]) == "-d" || string(argv[2]) == "--debug")) {
+  if (argc == 4 && (string(argv[3]) == "-d" || string(argv[3]) == "--debug")) {
     cout << "Debug mode enabled." << endl;
     debug = 1;
   }
 
   string filename = argv[1];
+  int k = stoi(argv[2]);
 
   Graph g(filename, debug);
 
@@ -23,5 +24,10 @@ int main(int argc, char *argv[]) {
     cout << "Graph created." << endl;
     g.print();
   }
+
+  cout << g.num_vertices << endl;
+
+  cout << g.countCliquesSerial(k) << endl;
+
   return 0;
 }

@@ -29,10 +29,10 @@ Os algoritmos foram testados com os datasets presentes na pasta `graph_datasets`
 
 | Dataset    | K   | Cliques    |
 | ---------- | --- | ---------- |
-| citeseer   | 3   | 24546      |
-| citeseer   | 4   | 1166       |
+| citeseer   | 3   | 1166       |
+| citeseer   | 4   | 255        |
 | citeseer   | 5   | 46         |
-| citeseer   | 6   | 6          |
+| citeseer   | 6   | 4          |
 | ca_astroph | 3   | 1351441    |
 | ca_astroph | 4   | 9580415    |
 | ca_astroph | 5   | 64997961   |

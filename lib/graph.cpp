@@ -29,8 +29,6 @@ Graph::Graph(string filename, int debug) {
 
   this->num_vertices = num_vertices;
 
-  sort(this->vertices.begin(), this->vertices.end());
-
   file.close();
 }
 
@@ -122,26 +120,17 @@ int Graph::countCliquesSerial(int k) {
 
   set<vector<int>> cliques;
 
-  for (int v : this->vertices) {
-    vector<int> clique;
-    clique.push_back(v);
-    cliques.insert(clique);
+  for (int v = 0 ; v < this->num_vertices; v++) {
+    cliques.insert(vector<int> {v});
   }
 
   while (!cliques.empty()) {
 
     vector<int> clique_atual = *cliques.rbegin();
-    cliques.erase(cliques.find(clique_atual));
+    cliques.erase(cliques.end());
 
     if (clique_atual.size() == k) {
       count += 1;
-
-      // printar a clique de tamanho k
-      // for (int v : clique_atual) {
-      //   cout << v << " ";
-      // }
-      // cout << endl;
-
       continue;
     }
 

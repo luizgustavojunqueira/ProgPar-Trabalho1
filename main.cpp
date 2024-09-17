@@ -20,11 +20,6 @@ int main(int argc, char *argv[]) {
 
   Graph g(filename, debug);
 
-  if (debug) {
-    cout << "Graph created." << endl;
-    g.print();
-  }
-
   cout << g.num_vertices << endl;
 
   cout << g.countCliquesSerial(k) << endl;

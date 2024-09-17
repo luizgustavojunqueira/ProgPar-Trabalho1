@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <vector>
 
 Graph::Graph(string filename, int debug) {
   this->debug = debug;
@@ -13,34 +14,63 @@ Graph::Graph(string filename, int debug) {
   int v, w;
   while (file >> v >> w) {
     if (vertex_map.find(v) == vertex_map.end()) {
+      this->vertices.push_back(num_vertices);
       vertex_map[v] = num_vertices++;
     }
 
     if (vertex_map.find(w) == vertex_map.end()) {
+      this->vertices.push_back(num_vertices);
       vertex_map[w] = num_vertices++;
     }
 
-    if (this->debug) {
-      cout << "Adding edge between " << v << " and " << w << endl;
-      cout << "Which are remapped to " << vertex_map[v] << " and "
-           << vertex_map[w] << endl;
-    }
-
-    this->add_edge(vertex_map[v], vertex_map[w], num_vertices);
+    this->add_edge(vertex_map[v], vertex_map[w]);
   }
 
   this->num_vertices = num_vertices;
 
+  sort(this->vertices.begin(), this->vertices.end());
+
   file.close();
 }
 
-void Graph::add_edge(int v, int vizinho, int num_vertices) {
-  this->adj_list.resize(num_vertices);
-  this->adj_list[v].push_back(vizinho);
-  this->adj_list[vizinho].push_back(v);
+void Graph::add_edge(int v, int u) {
+  long unsigned int size = this->adj_list.size();
+
+  if (size <= v) {
+    this->adj_list.push_back(vector<int>());
+  }
+
+  if (size <= u) {
+    this->adj_list.push_back(vector<int>());
+  }
+
+  if (find(this->adj_list[v].begin(), this->adj_list[v].end(), u) ==
+      this->adj_list[v].end()) {
+    this->adj_list[v].push_back(u);
+  }
+
+  if (find(this->adj_list[u].begin(), this->adj_list[u].end(), v) ==
+      this->adj_list[u].end()) {
+    this->adj_list[u].push_back(v);
+  }
+}
+
+void Graph::print_edges() {
+  for (long unsigned int i = 0; i < this->adj_list.size(); i++) {
+    for (long unsigned int j = 0; j < this->adj_list[i].size(); j++) {
+      cout << i << " " << this->adj_list[i][j] << endl;
+    }
+  }
 }
 
 void Graph::print() {
+
+  for (long unsigned int i = 0; i < this->vertices.size(); i++) {
+    cout << this->vertices[i] << " ";
+  }
+
+  cout << endl;
+
   for (long unsigned int i = 0; i < this->adj_list.size(); i++) {
     cout << i << ": ";
     for (long unsigned int j = 0; j < this->adj_list[i].size(); j++) {
@@ -53,42 +83,37 @@ void Graph::print() {
 }
 
 int Graph::isNeighbor(int v, int vizinho) {
-  return find(this->adj_list[v].begin(), this->adj_list[v].end(), vizinho) !=
-         this->adj_list[v].end();
+  if (find(this->adj_list[v].begin(), this->adj_list[v].end(), vizinho) ==
+      this->adj_list[v].end()) {
+    return 0;
+  }
+  return 1;
 }
 
 int Graph::connectToAll(vector<int> clique, int v) {
-  for (int i = 0; i < (int)clique.size(); i++) {
-    if (!this->isNeighbor(clique[i], v)) {
-
-      if (this->debug) {
-        cout << "    Vertex " << v << " is not connected to " << clique[i]
-             << endl;
-      }
+  for (int vertex : clique) {
+    if (this->isNeighbor(vertex, v) == 0) {
       return 0;
     }
   }
-
-  if (this->debug) {
-    cout << "    Vertex " << v << " is connected to all vertices in clique"
-         << endl;
-  }
-
   return 1;
 }
 
 int Graph::isInClique(vector<int> clique, int v) {
-  if (find(clique.begin(), clique.end(), v) == clique.end()) {
-    if (this->debug) {
-      cout << "    Vertex " << v << " is not in clique" << endl;
+  for (int vertex : clique) {
+    if (vertex == v) {
+      return 1;
     }
-    return 0;
   }
-  if (this->debug) {
-    cout << "    Vertex " << v << " is in clique" << endl;
-  }
+  return 0;
+}
 
-  return 1;
+int Graph::formsNewClique(vector<int> clique, int v) {
+
+  if (this->isInClique(clique, v) == 0 && this->connectToAll(clique, v) == 1) {
+    return 1;
+  }
+  return 0;
 }
 
 int Graph::countCliquesSerial(int k) {
@@ -96,103 +121,40 @@ int Graph::countCliquesSerial(int k) {
 
   vector<vector<int>> cliques;
 
-  if (this->debug) {
-    cout << "Starting to check cliques" << endl;
-  }
-
-  for (int i = 0; i < (int)this->adj_list.size(); i++) {
-    cliques.push_back(vector<int>{i});
-    if (this->debug) {
-      cout << "Adding " << i << " to cliques" << endl;
-    }
+  for (int v : this->vertices) {
+    vector<int> clique;
+    clique.push_back(v);
+    cliques.push_back(clique);
   }
 
   while (!cliques.empty()) {
-    if (this->debug) {
-      cout << "Current cliques: " << endl;
-      for (int i = 0; i < (int)cliques.size(); i++) {
-        cout << " [ ";
-        for (int j = 0; j < (int)cliques[i].size(); j++) {
-          cout << cliques[i][j] << " ";
-        }
-        cout << "]" << endl;
-      }
-    }
 
-    vector<int> clique = cliques.back();
+    vector<int> clique_atual = cliques.back();
     cliques.pop_back();
 
-    if (this->debug) {
-      cout << "Checking clique: [ ";
-      for (int i = 0; i < (int)clique.size(); i++) {
-        cout << clique[i] << " ";
+    if (clique_atual.size() == k) {
+      count += 1;
+      for (int v : clique_atual) {
+        cout << v << " ";
       }
-      cout << "]" << endl;
-    }
-
-    if ((int)clique.size() == k) {
-      if (this->debug) {
-        cout << "Clique found!" << endl;
-      }
-      count++;
+      cout << endl;
       continue;
     }
 
-    int last_v = clique.back();
+    int last_vertex = clique_atual[clique_atual.size() - 1];
 
-    if (this->debug) {
-      cout << " with last vertex " << last_v << endl;
-    }
+    for (int v : clique_atual) {
 
-    // Para cada vertice v no clique
-    for (int i = 0; i < (int)clique.size(); i++) {
-      int v = clique[i];
+      for (int vizinho : this->adj_list[v]) {
+        if (vizinho > last_vertex &&
+            this->formsNewClique(clique_atual, vizinho)) {
+          vector<int> nova_clique = clique_atual;
+          nova_clique.push_back(vizinho);
 
-      if (this->debug) {
-        cout << "  Checking vertex " << v << endl;
-      }
-
-      // Para cada vizinho de v
-      for (int j = 0; j < (int)this->adj_list[v].size(); j++) {
-        int vizinho = this->adj_list[v][j];
-
-        if (this->debug) {
-          cout << "   Checking neighbor " << vizinho << endl;
-        }
-        // Se vizinho nao esta no clique e conecta a todos os vertices do clique
-        // e vizinho > last_v
-        if (vizinho > last_v && this->isInClique(clique, vizinho) == 0 &&
-            this->connectToAll(clique, vizinho) == 1) {
-          if (this->debug) {
-            cout << "     Adding " << vizinho << " to clique" << endl;
-          }
-          // Adiciona vizinho ao clique
-          vector<int> new_clique = clique;
-          new_clique.push_back(vizinho);
-          if (find(cliques.begin(), cliques.end(), new_clique) ==
-              cliques.end()) {
-            // Adiciona novo clique a lista de cliques
-            cliques.push_back(new_clique);
-          }
-        }
-
-        if (this->debug) {
-          cout << "   Done checking neighbor " << vizinho << endl;
+          cliques.push_back(nova_clique);
         }
       }
-
-      if (this->debug) {
-        cout << "  Done checking vertex " << v << endl;
-      }
     }
-
-    if (this->debug) {
-      cout << "Done checking clique" << endl;
-    }
-  }
-
-  if (this->debug) {
-    cout << "Done checking all cliques" << endl;
   }
 
   return count;

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <set>
 #include <vector>
 
 Graph::Graph(string filename, int debug) {
@@ -119,25 +120,28 @@ int Graph::formsNewClique(vector<int> clique, int v) {
 int Graph::countCliquesSerial(int k) {
   int count = 0;
 
-  vector<vector<int>> cliques;
+  set<vector<int>> cliques;
 
   for (int v : this->vertices) {
     vector<int> clique;
     clique.push_back(v);
-    cliques.push_back(clique);
+    cliques.insert(clique);
   }
 
   while (!cliques.empty()) {
 
-    vector<int> clique_atual = cliques.back();
-    cliques.pop_back();
+    vector<int> clique_atual = *cliques.rbegin();
+    cliques.erase(cliques.find(clique_atual));
 
     if (clique_atual.size() == k) {
       count += 1;
-      for (int v : clique_atual) {
-        cout << v << " ";
-      }
-      cout << endl;
+
+      // printar a clique de tamanho k
+      // for (int v : clique_atual) {
+      //   cout << v << " ";
+      // }
+      // cout << endl;
+
       continue;
     }
 
@@ -151,7 +155,7 @@ int Graph::countCliquesSerial(int k) {
           vector<int> nova_clique = clique_atual;
           nova_clique.push_back(vizinho);
 
-          cliques.push_back(nova_clique);
+          cliques.insert(nova_clique);
         }
       }
     }

@@ -6,8 +6,7 @@
 #include <set>
 #include <vector>
 
-Graph::Graph(string filename, int debug) {
-  this->debug = debug;
+Graph::Graph(string filename) {
   ifstream file(filename);
   map<int, int> vertex_map;
   int num_vertices = 0;
@@ -108,7 +107,6 @@ int Graph::isInClique(vector<int> clique, int v) {
 }
 
 int Graph::formsNewClique(vector<int> clique, int v) {
-
   if (this->isInClique(clique, v) == 0 && this->connectToAll(clique, v) == 1) {
     return 1;
   }
@@ -120,21 +118,21 @@ int Graph::countCliquesSerial(int k) {
 
   set<vector<int>> cliques;
 
-  for (int v = 0 ; v < this->num_vertices; v++) {
-    cliques.insert(vector<int> {v});
+  for (int v = 0; v < this->num_vertices; v++) {
+    cliques.insert(vector<int>{v});
   }
 
   while (!cliques.empty()) {
 
     vector<int> clique_atual = *cliques.rbegin();
-    cliques.erase(cliques.end());
+    cliques.erase(clique_atual);
 
     if (clique_atual.size() == k) {
       count += 1;
       continue;
     }
 
-    int last_vertex = clique_atual[clique_atual.size() - 1];
+    int last_vertex = clique_atual.back();
 
     for (int v : clique_atual) {
 

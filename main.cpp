@@ -8,17 +8,10 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  int debug = 0;
-
-  if (argc == 4 && (string(argv[3]) == "-d" || string(argv[3]) == "--debug")) {
-    cout << "Debug mode enabled." << endl;
-    debug = 1;
-  }
-
   string filename = argv[1];
   int k = stoi(argv[2]);
 
-  Graph g(filename, debug);
+  Graph g(filename);
 
   cout << g.num_vertices << endl;
 

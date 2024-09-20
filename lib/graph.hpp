@@ -5,7 +5,7 @@ using namespace std;
 
 class Graph {
 public:
-  Graph(string filename, int debug);
+  Graph(string filename);
   int countCliquesSerial(int k);
   void print();
   void print_edges();
@@ -19,5 +19,4 @@ private:
   int connectToAll(vector<int> clique, int v);
   int isInClique(vector<int> clique, int v);
   int formsNewClique(vector<int> clique, int v);
-  int debug;
 };

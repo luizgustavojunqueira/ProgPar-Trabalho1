@@ -10,3 +10,4 @@ clean:
 	rm -f *.o *.a *.so
 	rm -f main
 	rm -f *.out
+	rm -f *.results

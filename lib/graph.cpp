@@ -31,7 +31,7 @@ Graph::Graph(string filename) {
   file.close();
 }
 
-void Graph::add_edge(int v, int u) {
+void Graph::add_edge(long unsigned int v, long unsigned int u) {
   long unsigned int size = this->adj_list.size();
 
   if (size <= v) {
@@ -51,33 +51,6 @@ void Graph::add_edge(int v, int u) {
       this->adj_list[u].end()) {
     this->adj_list[u].push_back(v);
   }
-}
-
-void Graph::print_edges() {
-  for (long unsigned int i = 0; i < this->adj_list.size(); i++) {
-    for (long unsigned int j = 0; j < this->adj_list[i].size(); j++) {
-      cout << i << " " << this->adj_list[i][j] << endl;
-    }
-  }
-}
-
-void Graph::print() {
-
-  for (long unsigned int i = 0; i < this->vertices.size(); i++) {
-    cout << this->vertices[i] << " ";
-  }
-
-  cout << endl;
-
-  for (long unsigned int i = 0; i < this->adj_list.size(); i++) {
-    cout << i << ": ";
-    for (long unsigned int j = 0; j < this->adj_list[i].size(); j++) {
-      cout << this->adj_list[i][j] << " ";
-    }
-    cout << endl;
-  }
-
-  cout << "This graph has " << this->adj_list.size() << " vertices." << endl;
 }
 
 int Graph::isNeighbor(int v, int vizinho) {
@@ -113,7 +86,7 @@ int Graph::formsNewClique(vector<int> clique, int v) {
   return 0;
 }
 
-int Graph::countCliquesSerial(int k) {
+int Graph::countCliquesSerial(long unsigned int k) {
   int count = 0;
 
   set<vector<int>> cliques;
@@ -151,3 +124,8 @@ int Graph::countCliquesSerial(int k) {
   return count;
 }
 
+int Graph::countCliquesParalelo(int k, int t) {
+  int count = 0;
+
+  return count;
+}

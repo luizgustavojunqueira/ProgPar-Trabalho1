@@ -7,6 +7,8 @@ class Graph {
 public:
   Graph(string filename);
   int countCliquesSerial(int k);
+  int countCliquesParalelo(int k, int t);
+  int countCliquesParaleloBalanceado(int k);
   void print();
   void print_edges();
   int num_vertices;

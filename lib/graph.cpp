@@ -150,3 +150,4 @@ int Graph::countCliquesSerial(int k) {
 
   return count;
 }
+

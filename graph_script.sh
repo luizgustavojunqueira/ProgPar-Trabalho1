@@ -39,7 +39,7 @@ echo ""
 echo "Executando o código para o dataset ca_astroph"
 
 echo "ca_astroph" >> cliques.results
-# Executar o código para o dataset ca_astroph para os valores de k = 3, 4, 5 e 6 e alg = 1, 2 e 3
+# Executar o código para o dataset ca_astroph para os valores de k = 3, 4, 5, 6 e 7, e alg = 1, 2 e 3
 for alg in 1 2
 do
 
@@ -55,7 +55,7 @@ do
     fi
   fi
 
-  for k in 3 4 5 6
+  for k in 3 4 5 6 7
     do
       echo "Executando para k = $k"
       ./main ./graph_datasets/ca_astroph.edgelist $k $alg >> cliques.results

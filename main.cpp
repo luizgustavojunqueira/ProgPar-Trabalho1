@@ -39,9 +39,8 @@ int main(int argc, char *argv[]) {
          << " Time: " << end_time - start_time << "s" << endl;
   } else if (alg == 2) {
     const int processor_count = std::thread::hardware_concurrency();
-    cout << processor_count << endl;
     start_time = read_timer();
-    int numCliques = g.countCliquesParalelo(k, processor_count);
+    int numCliques = countCliquesParalelo(k, processor_count, &g);
     end_time = read_timer();
     cout << "Paralelo " << k << "-cliques: " << numCliques
          << " Time: " << end_time - start_time << "s" << endl;

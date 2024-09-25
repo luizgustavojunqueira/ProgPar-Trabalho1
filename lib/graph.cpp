@@ -3,8 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include <set>
-#include <vector>
 
 Graph::Graph(string filename) {
   ifstream file(filename);
@@ -124,8 +122,69 @@ int Graph::countCliquesSerial(long unsigned int k) {
   return count;
 }
 
-int Graph::countCliquesParalelo(int k, int t) {
+void *countCliquesThread(void *args) {
+
+  ThreadData *data = (ThreadData *)args;
+
   int count = 0;
+
+  while (!data->cliques.empty()) {
+
+    vector<int> clique_atual = *data->cliques.rbegin();
+    data->cliques.erase(clique_atual);
+
+    if (clique_atual.size() == data->k) {
+      count += 1;
+      continue;
+    }
+
+    int last_vertex = clique_atual.back();
+
+    for (int v : clique_atual) {
+
+      for (int vizinho : data->graph->adj_list[v]) {
+        if (vizinho > last_vertex &&
+            data->graph->formsNewClique(clique_atual, vizinho)) {
+          vector<int> nova_clique = clique_atual;
+          nova_clique.push_back(vizinho);
+
+          data->cliques.insert(nova_clique);
+        }
+      }
+    }
+  }
+
+  pthread_exit((void *)count);
+}
+
+int countCliquesParalelo(int k, int t, Graph *graph) {
+
+  vector<set<vector<int>>> threads_cliques(t);
+
+  for (int v = 0; v < graph->num_vertices; v++) {
+    threads_cliques[v % t].insert(vector<int>{v});
+  }
+
+  vector<pthread_t> threads(t);
+  vector<int> counts(t);
+
+  ThreadData data[t];
+
+  for (int i = 0; i < t; i++) {
+    data[i].k = k;
+    data[i].cliques = threads_cliques[i];
+    data[i].graph = graph;
+    pthread_create(&threads[i], NULL, &countCliquesThread, (void *)&data[i]);
+  }
+
+  for (int i = 0; i < t; i++) {
+    pthread_join(threads[i], (void **)&counts[i]);
+  }
+
+  int count = 0;
+  for (int i = 0; i < t; i++) {
+    count += counts[i];
+  }
 
   return count;
 }

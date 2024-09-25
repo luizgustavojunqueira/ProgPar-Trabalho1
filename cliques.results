@@ -1,0 +1,27 @@
+ 
+==============================
+25/09/2024 10:49:46
+citeseer
+Serial 3-cliques: 1166 Time: 0.042025s
+Serial 4-cliques: 255 Time: 0.051211s
+Serial 5-cliques: 46 Time: 0.051788s
+Serial 6-cliques: 4 Time: 0.052148s
+Paralelo 3-cliques: 1166 Time: 0.013227s
+Paralelo 4-cliques: 255 Time: 0.014946s
+Paralelo 5-cliques: 46 Time: 0.015517s
+Paralelo 6-cliques: 4 Time: 0.015541s
+ca_astroph
+Serial 3-cliques: 1351441 Time: 40.7565s
+ 
+==============================
+25/09/2024 10:50:59
+citeseer
+Serial 3-cliques: 1166 Time: 0.105024s
+Serial 4-cliques: 255 Time: 0.123291s
+Serial 5-cliques: 46 Time: 0.128856s
+Serial 6-cliques: 4 Time: 0.129352s
+Paralelo 3-cliques: 1166 Time: 0.030655s
+Paralelo 4-cliques: 255 Time: 0.039321s
+Paralelo 5-cliques: 46 Time: 0.04036s
+Paralelo 6-cliques: 4 Time: 0.039654s
+ca_astroph

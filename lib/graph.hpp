@@ -25,7 +25,7 @@ private:
 
 class ThreadData {
 public:
-  int k;
+  long unsigned int k;
   set<vector<int>> cliques;
   Graph *graph;
 };

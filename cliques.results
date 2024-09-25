@@ -25,3 +25,17 @@ Paralelo 4-cliques: 255 Time: 0.039321s
 Paralelo 5-cliques: 46 Time: 0.04036s
 Paralelo 6-cliques: 4 Time: 0.039654s
 ca_astroph
+ 
+==============================
+25/09/2024 10:57:54
+citeseer
+Serial 3-cliques: 1166 Time: 0.041912s
+Serial 4-cliques: 255 Time: 0.051213s
+Serial 5-cliques: 46 Time: 0.05145s
+Serial 6-cliques: 4 Time: 0.051812s
+Paralelo 3-cliques: 1166 Time: 0.01293s
+Paralelo 4-cliques: 255 Time: 0.014885s
+Paralelo 5-cliques: 46 Time: 0.015448s
+Paralelo 6-cliques: 4 Time: 0.015614s
+ca_astroph
+Serial 3-cliques: 1351441 Time: 21.6557s

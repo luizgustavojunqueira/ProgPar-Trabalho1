@@ -1,0 +1,19 @@
+Citeseer
+Serial 3-cliques: 1166 Time: 0.042025s
+Serial 4-cliques: 255 Time: 0.051211s
+Serial 5-cliques: 46 Time: 0.051788s
+Serial 6-cliques: 4 Time: 0.052148s
+Paralelo 3-cliques: 1166 Time: 0.013227s
+Paralelo 4-cliques: 255 Time: 0.014946s
+Paralelo 5-cliques: 46 Time: 0.015517s
+Paralelo 6-cliques: 4 Time: 0.015541s
+
+Ca-Astroph
+Serial 3-cliques: 1351441 Time: 21.6557s
+Paralelo 3-cliques: 1351441 Time: 4.89517s
+Paralelo 4-cliques: 9580415 Time: 96.2265s
+Paralelo 5-cliques: 64997961 Time: 1553.92s
+
+Dblp
+Paralelo 3-cliques: 2224385 Time: 17.6514s
+Paralelo 4-cliques: 16713192 Time: 107.815s

@@ -44,6 +44,14 @@ int main(int argc, char *argv[]) {
     end_time = read_timer();
     cout << "Paralelo " << k << "-cliques: " << numCliques
          << " Time: " << end_time - start_time << "s" << endl;
+  } else if (alg == 3) {
+
+    const int processor_count = std::thread::hardware_concurrency();
+    start_time = read_timer();
+    int numCliques = countCliquesParaleloBalanceado(k, processor_count, &g);
+    end_time = read_timer();
+    cout << "Paralelo Balanceado " << k << "-cliques: " << numCliques
+         << " Time: " << end_time - start_time << "s" << endl;
   }
 
   return 0;

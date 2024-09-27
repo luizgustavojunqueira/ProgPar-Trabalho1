@@ -124,7 +124,7 @@ int Graph::countCliquesSerial(long unsigned int k) {
 
 void *countCliquesThread(void *args) {
 
-  ThreadData *data = (ThreadData *)args;
+  ThreadDataAlg2 *data = (ThreadDataAlg2 *)args;
 
   int count = 0;
 
@@ -168,7 +168,7 @@ int countCliquesParalelo(int k, int t, Graph *graph) {
   vector<pthread_t> threads(t);
   vector<int> counts(t);
 
-  ThreadData data[t];
+  ThreadDataAlg2 data[t];
 
   for (int i = 0; i < t; i++) {
     data[i].k = k;
@@ -187,4 +187,148 @@ int countCliquesParalelo(int k, int t, Graph *graph) {
   }
 
   return count;
+}
+
+int countCliquesParaleloBalanceado(int k, int t, Graph *graph) {
+
+  set<vector<int>> threads_cliques[t];
+
+  for (int v = 0; v < graph->num_vertices; v++) {
+    threads_cliques[v % t].insert(vector<int>{v});
+  }
+
+  vector<pthread_t> threads(t);
+  vector<int> counts(t);
+  vector<pthread_mutex_t> mutexes(t);
+
+  ThreadDataAlg3 data[t];
+
+  for (int i = 0; i < t; i++) {
+
+    pthread_mutex_init(&mutexes[i], NULL);
+    data[i].k = k;
+    data[i].graph = graph;
+    data[i].id = i;
+    data[i].threads_cliques = threads_cliques;
+    data[i].num_threads = t;
+    data[i].mutexes = &mutexes;
+    pthread_create(&threads[i], NULL, &countCliquesThreadBalanceada,
+                   (void *)&data[i]);
+  }
+
+  for (int i = 0; i < t; i++) {
+    pthread_join(threads[i], (void **)&counts[i]);
+  }
+
+  int count = 0;
+  for (int i = 0; i < t; i++) {
+    count += counts[i];
+  }
+
+  return count;
+}
+
+void *countCliquesThreadBalanceada(void *args) {
+
+  ThreadDataAlg3 *data = (ThreadDataAlg3 *)args;
+
+  int count = 0;
+  bool allEmpty = false;
+
+  while (!allEmpty) {
+
+    while (!data->threads_cliques[data->id].empty()) {
+
+      pthread_mutex_lock(&data->mutexes->at(data->id));
+      vector<int> clique_atual = *data->threads_cliques[data->id].rbegin();
+      data->threads_cliques[data->id].erase(clique_atual);
+      pthread_mutex_unlock(&data->mutexes->at(data->id));
+
+      if (clique_atual.size() == data->k) {
+        count += 1;
+
+        if (data->threads_cliques[data->id].empty()) {
+          cout << "Thread " << data->id << " terminou dentro do while" << endl;
+          allEmpty = true;
+          for (int i = 0; i < data->num_threads; i++) {
+            if (i != data->id) {
+
+              if (data->threads_cliques[i].size() > 0) {
+                allEmpty = false;
+              }
+              if (data->threads_cliques[i].size() > 50) {
+                int qntRoubar = data->threads_cliques[i].size() * 0.1;
+                qntRoubar = qntRoubar > 25 ? qntRoubar : 25;
+
+                for (int j = 0; j < qntRoubar; j++) {
+                  pthread_mutex_lock(&data->mutexes->at(i));
+                  vector<int> clique = *data->threads_cliques[i].rbegin();
+                  data->threads_cliques[i].erase(clique);
+                  pthread_mutex_unlock(&data->mutexes->at(i));
+
+                  pthread_mutex_lock(&data->mutexes->at(data->id));
+                  data->threads_cliques[data->id].insert(clique);
+                  pthread_mutex_unlock(&data->mutexes->at(data->id));
+                }
+
+                cout << "Thread " << data->id << " roubou " << qntRoubar
+                     << " de " << i << endl;
+              }
+            }
+          }
+        }
+
+        continue;
+      }
+      int last_vertex = clique_atual.back();
+
+      pthread_mutex_lock(&data->mutexes->at(data->id));
+      for (int v : clique_atual) {
+
+        for (int vizinho : data->graph->adj_list[v]) {
+          if (vizinho > last_vertex &&
+              data->graph->formsNewClique(clique_atual, vizinho)) {
+            vector<int> nova_clique = clique_atual;
+            nova_clique.push_back(vizinho);
+
+            data->threads_cliques[data->id].insert(nova_clique);
+          }
+        }
+      }
+      pthread_mutex_unlock(&data->mutexes->at(data->id));
+
+      if (data->threads_cliques[data->id].empty()) {
+        cout << "Thread " << data->id << " terminou dentro do while" << endl;
+        allEmpty = true;
+        for (int i = 0; i < data->num_threads; i++) {
+          if (i != data->id) {
+
+            if (data->threads_cliques[i].size() > 0) {
+              allEmpty = false;
+            }
+            if (data->threads_cliques[i].size() > 50) {
+              int qntRoubar = data->threads_cliques[i].size() * 0.1;
+              qntRoubar = qntRoubar > 25 ? qntRoubar : 25;
+
+              for (int j = 0; j < qntRoubar; j++) {
+                pthread_mutex_lock(&data->mutexes->at(i));
+                vector<int> clique = *data->threads_cliques[i].rbegin();
+                data->threads_cliques[i].erase(clique);
+                pthread_mutex_unlock(&data->mutexes->at(i));
+
+                pthread_mutex_lock(&data->mutexes->at(data->id));
+                data->threads_cliques[data->id].insert(clique);
+                pthread_mutex_unlock(&data->mutexes->at(data->id));
+              }
+
+              cout << "Thread " << data->id << " roubou " << qntRoubar << " de "
+                   << i << endl;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  pthread_exit((void *)count);
 }

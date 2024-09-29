@@ -11,7 +11,7 @@ date +"%d/%m/%Y %H:%M:%S">> cliques.results
 echo "Executando o código para o dataset citeseer"
 
 echo "citeseer" >> cliques.results
-for alg in 1 2 
+for alg in 1 2 3
 do
 
   if [ $alg -eq 1 ];
@@ -40,7 +40,7 @@ echo "Executando o código para o dataset ca_astroph"
 
 echo "ca_astroph" >> cliques.results
 # Executar o código para o dataset ca_astroph para os valores de k = 3, 4, 5, 6 e 7, e alg = 1, 2 e 3
-for alg in 1 2
+for alg in 1 2 3
 do
 
   if [ $alg -eq 1 ];
@@ -68,7 +68,7 @@ echo "Executando o código para o dataset dblp"
 
 echo "dblp" >> cliques.results
 # Executar o código para o dataset dblp para os valores de k = 3, 4, 5 e 6 e alg = 1, 2 e 3
-for alg in 1 2
+for alg in 1 2 3
 do
 
   if [ $alg -eq 1 ];

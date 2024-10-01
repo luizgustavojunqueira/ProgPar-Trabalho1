@@ -1,8 +1,9 @@
-#include "graph.hpp"
+#include "cliques.hpp"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <pthread.h>
 
 Graph::Graph(string filename) {
   ifstream file(filename);
@@ -189,17 +190,19 @@ int countCliquesParalelo(int k, int t, Graph *graph) {
   return count;
 }
 
-int countCliquesParaleloBalanceado(int k, int t, Graph *graph) {
+int countCliquesParaleloBalanceado(int k, int t, int r, int tentativas,
+                                   Graph *graph) {
 
+  // t sets de cliques
   set<vector<int>> threads_cliques[t];
 
-  for (int v = 0; v < graph->num_vertices; v++) {
-    threads_cliques[v % t].insert(vector<int>{v});
+  for (int i = 0; i < graph->num_vertices; i++) {
+    threads_cliques[i % t].insert(vector<int>{i});
   }
 
-  vector<pthread_t> threads(t);
-  vector<int> counts(t);
-  vector<pthread_mutex_t> mutexes(t);
+  pthread_t threads[t];
+  int counts[t];
+  pthread_mutex_t mutexes[t];
 
   ThreadDataAlg3 data[t];
 
@@ -207,11 +210,13 @@ int countCliquesParaleloBalanceado(int k, int t, Graph *graph) {
 
     pthread_mutex_init(&mutexes[i], NULL);
     data[i].k = k;
-    data[i].graph = graph;
     data[i].id = i;
-    data[i].threads_cliques = threads_cliques;
     data[i].num_threads = t;
-    data[i].mutexes = &mutexes;
+    data[i].r = r;
+    data[i].tentativas = tentativas;
+    data[i].graph = graph;
+    data[i].threads_cliques = threads_cliques;
+    data[i].mutexes = mutexes;
     pthread_create(&threads[i], NULL, &countCliquesThreadBalanceada,
                    (void *)&data[i]);
   }
@@ -234,44 +239,24 @@ void *countCliquesThreadBalanceada(void *args) {
 
   int count = 0;
 
+  int tentativasRoubar = 0;
+
   while (!data->threads_cliques[data->id].empty()) {
 
-    pthread_mutex_lock(&data->mutexes->at(data->id));
+    pthread_mutex_lock(&data->mutexes[data->id]);
     vector<int> clique_atual = *data->threads_cliques[data->id].rbegin();
     data->threads_cliques[data->id].erase(clique_atual);
-    pthread_mutex_unlock(&data->mutexes->at(data->id));
+    pthread_mutex_unlock(&data->mutexes[data->id]);
 
     if (clique_atual.size() == data->k) {
       count += 1;
-
-      // Se a thread atual acabou o trabalho
-      if (data->threads_cliques[data->id].empty()) {
-
-        int qntRoubadaTotal = 0;
-
-        // Rouba 10% do trabalho de cada thread
-
-        for (int i = 0; i < data->num_threads; i++) {
-          if (i != data->id) {
-            pthread_mutex_lock(&data->mutexes->at(i));
-            int cliques_to_move = data->threads_cliques[i].size() / 10;
-            qntRoubadaTotal += cliques_to_move;
-            for (int j = 0; j < cliques_to_move; j++) {
-              vector<int> clique = *data->threads_cliques[i].rbegin();
-              data->threads_cliques[i].erase(clique);
-              data->threads_cliques[data->id].insert(clique);
-            }
-            pthread_mutex_unlock(&data->mutexes->at(i));
-          }
-        }
-      }
 
       continue;
     }
 
     int last_vertex = clique_atual.back();
 
-    pthread_mutex_lock(&data->mutexes->at(data->id));
+    pthread_mutex_lock(&data->mutexes[data->id]);
     for (int v : clique_atual) {
 
       for (int vizinho : data->graph->adj_list[v]) {
@@ -284,28 +269,44 @@ void *countCliquesThreadBalanceada(void *args) {
         }
       }
     }
+    pthread_mutex_unlock(&data->mutexes[data->id]);
 
-    pthread_mutex_unlock(&data->mutexes->at(data->id));
-
-    // Se a thread atual acabou o trabalho
     if (data->threads_cliques[data->id].empty()) {
+      while (tentativasRoubar < data->tentativas) {
+        for (int i = 0; i < data->num_threads; i++) {
 
-      int qntRoubadaTotal = 0;
+          if (i != data->id) {
+            pthread_mutex_lock(&data->mutexes[i]);
 
-      for (int i = 0; i < data->num_threads; i++) {
-        if (i != data->id) {
-          pthread_mutex_lock(&data->mutexes->at(i));
-          int cliques_to_move = data->threads_cliques[i].size() / 10;
-          qntRoubadaTotal += cliques_to_move;
-          for (int j = 0; j < cliques_to_move; j++) {
-            vector<int> clique = *data->threads_cliques[i].rbegin();
-            data->threads_cliques[i].erase(clique);
-            data->threads_cliques[data->id].insert(clique);
+            int qntRoubar = data->threads_cliques[i].size() * (data->r / 100);
+
+            if (qntRoubar < 10) {
+              pthread_mutex_unlock(&data->mutexes[i]);
+              continue;
+            }
+
+            pthread_mutex_lock(&data->mutexes[data->id]);
+            for (int j = 0; j < qntRoubar; j++) {
+              vector<int> clique_roubada = *data->threads_cliques[i].rbegin();
+              data->threads_cliques[i].erase(clique_roubada);
+              data->threads_cliques[data->id].insert(clique_roubada);
+            }
+
+            pthread_mutex_unlock(&data->mutexes[data->id]);
+            pthread_mutex_unlock(&data->mutexes[i]);
           }
-          pthread_mutex_unlock(&data->mutexes->at(i));
+        }
+
+        if (data->threads_cliques[data->id].empty()) {
+          tentativasRoubar++;
+        } else {
+          tentativasRoubar = 0;
+
+          break;
         }
       }
     }
   }
+
   pthread_exit((void *)count);
 }

@@ -1,4 +1,4 @@
-#include "./lib/graph.hpp"
+#include "./lib/cliques.hpp"
 #include <iostream>
 #include <sys/time.h>
 #include <thread>
@@ -46,9 +46,17 @@ int main(int argc, char *argv[]) {
          << " Time: " << end_time - start_time << "s" << endl;
   } else if (alg == 3) {
 
+    int r = 10;
+    int tentativas = 10;
+    if (argc >= 6) {
+      r = stoi(argv[4]);
+      tentativas = stoi(argv[5]);
+    }
+
     const int processor_count = std::thread::hardware_concurrency();
     start_time = read_timer();
-    int numCliques = countCliquesParaleloBalanceado(k, processor_count, &g);
+    int numCliques =
+        countCliquesParaleloBalanceado(k, processor_count, r, tentativas, &g);
     end_time = read_timer();
     cout << "Paralelo Balanceado " << k << "-cliques: " << numCliques
          << " Time: " << end_time - start_time << "s" << endl;

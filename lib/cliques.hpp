@@ -36,12 +36,15 @@ int countCliquesParalelo(int k, int t, Graph *g);
 class ThreadDataAlg3 {
 public:
   long unsigned int k;
-  Graph *graph;
   int id;
-  set<vector<int>> *threads_cliques;
   int num_threads;
-  vector<pthread_mutex_t> *mutexes;
+  int r;
+  int tentativas;
+  Graph *graph;
+  set<vector<int>> *threads_cliques;
+  pthread_mutex_t *mutexes;
 };
 
 void *countCliquesThreadBalanceada(void *threadarg);
-int countCliquesParaleloBalanceado(int k, int t, Graph *g);
+int countCliquesParaleloBalanceado(int k, int t, int r, int tentativas,
+                                   Graph *g);

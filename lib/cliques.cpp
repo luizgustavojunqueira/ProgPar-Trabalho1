@@ -27,6 +27,10 @@ Graph::Graph(string filename) {
 
   this->num_vertices = num_vertices;
 
+  for (int i = 0; i < this->num_vertices; i++) {
+    sort(this->adj_list[i].begin(), this->adj_list[i].end());
+  }
+
   file.close();
 }
 
@@ -53,11 +57,11 @@ void Graph::add_edge(long unsigned int v, long unsigned int u) {
 }
 
 int Graph::isNeighbor(int v, int vizinho) {
-  if (find(this->adj_list[v].begin(), this->adj_list[v].end(), vizinho) ==
-      this->adj_list[v].end()) {
-    return 0;
+  if (binary_search(this->adj_list[v].begin(), this->adj_list[v].end(),
+                    vizinho)) {
+    return 1;
   }
-  return 1;
+  return 0;
 }
 
 int Graph::connectToAll(vector<int> clique, int v) {
@@ -96,7 +100,7 @@ int Graph::countCliquesSerial(long unsigned int k) {
 
   while (!cliques.empty()) {
 
-    vector<int> clique_atual = *cliques.rbegin();
+    vector<int> clique_atual = *cliques.begin();
     cliques.erase(clique_atual);
 
     if (clique_atual.size() == k) {
@@ -131,7 +135,7 @@ void *countCliquesThread(void *args) {
 
   while (!data->cliques.empty()) {
 
-    vector<int> clique_atual = *data->cliques.rbegin();
+    vector<int> clique_atual = *data->cliques.begin();
     data->cliques.erase(clique_atual);
 
     if (clique_atual.size() == data->k) {
@@ -243,10 +247,8 @@ void *countCliquesThreadBalanceada(void *args) {
 
   while (!data->threads_cliques[data->id].empty()) {
 
-    pthread_mutex_lock(&data->mutexes[data->id]);
-    vector<int> clique_atual = *data->threads_cliques[data->id].rbegin();
+    vector<int> clique_atual = *data->threads_cliques[data->id].begin();
     data->threads_cliques[data->id].erase(clique_atual);
-    pthread_mutex_unlock(&data->mutexes[data->id]);
 
     if (clique_atual.size() == data->k) {
       count += 1;
@@ -256,7 +258,6 @@ void *countCliquesThreadBalanceada(void *args) {
 
     int last_vertex = clique_atual.back();
 
-    pthread_mutex_lock(&data->mutexes[data->id]);
     for (int v : clique_atual) {
 
       for (int vizinho : data->graph->adj_list[v]) {
@@ -265,35 +266,36 @@ void *countCliquesThreadBalanceada(void *args) {
           vector<int> nova_clique = clique_atual;
           nova_clique.push_back(vizinho);
 
+          pthread_mutex_lock(&data->mutexes[data->id]);
           data->threads_cliques[data->id].insert(nova_clique);
+          pthread_mutex_unlock(&data->mutexes[data->id]);
         }
       }
     }
-    pthread_mutex_unlock(&data->mutexes[data->id]);
 
     if (data->threads_cliques[data->id].empty()) {
       while (tentativasRoubar < data->tentativas) {
+        bool allEmpty = true;
+
         for (int i = 0; i < data->num_threads; i++) {
 
           if (i != data->id) {
-            pthread_mutex_lock(&data->mutexes[i]);
 
             int qntRoubar = data->threads_cliques[i].size() * (data->r / 100);
 
             if (qntRoubar < 10) {
-              pthread_mutex_unlock(&data->mutexes[i]);
               continue;
             }
 
-            pthread_mutex_lock(&data->mutexes[data->id]);
+            allEmpty = false;
+
             for (int j = 0; j < qntRoubar; j++) {
+              pthread_mutex_lock(&data->mutexes[i]);
               vector<int> clique_roubada = *data->threads_cliques[i].rbegin();
               data->threads_cliques[i].erase(clique_roubada);
+              pthread_mutex_unlock(&data->mutexes[i]);
               data->threads_cliques[data->id].insert(clique_roubada);
             }
-
-            pthread_mutex_unlock(&data->mutexes[data->id]);
-            pthread_mutex_unlock(&data->mutexes[i]);
           }
         }
 
@@ -302,6 +304,10 @@ void *countCliquesThreadBalanceada(void *args) {
         } else {
           tentativasRoubar = 0;
 
+          break;
+        }
+
+        if (allEmpty) {
           break;
         }
       }

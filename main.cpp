@@ -32,18 +32,22 @@ int main(int argc, char *argv[]) {
   Graph g(filename);
 
   if (alg == 1) {
+
     start_time = read_timer();
     int numCliques = g.countCliquesSerial(k);
     end_time = read_timer();
     cout << "Serial " << k << "-cliques: " << numCliques
          << " Time: " << end_time - start_time << "s" << endl;
+
   } else if (alg == 2) {
+
     const int processor_count = std::thread::hardware_concurrency();
     start_time = read_timer();
     int numCliques = countCliquesParalelo(k, processor_count, &g);
     end_time = read_timer();
     cout << "Paralelo " << k << "-cliques: " << numCliques
          << " Time: " << end_time - start_time << "s" << endl;
+
   } else if (alg == 3) {
 
     int r = 10;

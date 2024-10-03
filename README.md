@@ -55,8 +55,8 @@ make main
 
 ### Execução
 
-Para executar o programa, basta executar o seguinte comando no terminal. O programa irá receber como entrada um arquivo contendo o grafo e um valor K.
+Para executar o programa, basta executar o seguinte comando no terminal. O programa irá receber como entrada um arquivo contendo o grafo, um valor K e um número de 1 a 3, representando qual algoritmo usar.
 
 ```bash
-./main <arquivo_do_grafo> <K>
+./main <arquivo_do_grafo> <K> <alg>
 ```

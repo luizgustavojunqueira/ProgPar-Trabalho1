@@ -89,8 +89,8 @@ int Graph::formsNewClique(vector<int> clique, int v) {
   return 0;
 }
 
-int Graph::countCliquesSerial(long unsigned int k) {
-  int count = 0;
+unsigned int Graph::countCliquesSerial(long unsigned int k) {
+  unsigned int count = 0;
 
   set<vector<int>> cliques;
 
@@ -131,7 +131,7 @@ void *countCliquesThread(void *args) {
 
   ThreadDataAlg2 *data = (ThreadDataAlg2 *)args;
 
-  int count = 0;
+  unsigned int count = 0;
 
   while (!data->cliques.empty()) {
 
@@ -162,7 +162,7 @@ void *countCliquesThread(void *args) {
   pthread_exit((void *)count);
 }
 
-int countCliquesParalelo(int k, int t, Graph *graph) {
+unsigned int countCliquesParalelo(int k, int t, Graph *graph) {
 
   vector<set<vector<int>>> threads_cliques(t);
 
@@ -171,7 +171,7 @@ int countCliquesParalelo(int k, int t, Graph *graph) {
   }
 
   vector<pthread_t> threads(t);
-  vector<int> counts(t);
+  vector<unsigned int> counts(t);
 
   ThreadDataAlg2 data[t];
 
@@ -186,7 +186,7 @@ int countCliquesParalelo(int k, int t, Graph *graph) {
     pthread_join(threads[i], (void **)&counts[i]);
   }
 
-  int count = 0;
+  unsigned int count = 0;
   for (int i = 0; i < t; i++) {
     count += counts[i];
   }
@@ -194,7 +194,7 @@ int countCliquesParalelo(int k, int t, Graph *graph) {
   return count;
 }
 
-int countCliquesParaleloBalanceado(int k, int t, int r, int tentativas,
+unsigned int countCliquesParaleloBalanceado(int k, int t, int r, int tentativas,
                                    Graph *graph) {
 
   // t sets de cliques
@@ -205,7 +205,7 @@ int countCliquesParaleloBalanceado(int k, int t, int r, int tentativas,
   }
 
   pthread_t threads[t];
-  int counts[t];
+  unsigned int counts[t];
   pthread_mutex_t mutexes[t];
 
   ThreadDataAlg3 data[t];
@@ -229,7 +229,7 @@ int countCliquesParaleloBalanceado(int k, int t, int r, int tentativas,
     pthread_join(threads[i], (void **)&counts[i]);
   }
 
-  int count = 0;
+  unsigned int count = 0;
   for (int i = 0; i < t; i++) {
     count += counts[i];
   }
@@ -241,7 +241,7 @@ void *countCliquesThreadBalanceada(void *args) {
 
   ThreadDataAlg3 *data = (ThreadDataAlg3 *)args;
 
-  int count = 0;
+  unsigned int count = 0;
 
   int tentativasRoubar = 0;
 

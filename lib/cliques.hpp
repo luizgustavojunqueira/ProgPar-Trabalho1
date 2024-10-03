@@ -8,7 +8,7 @@ using namespace std;
 class Graph {
 public:
   Graph(string filename);
-  int countCliquesSerial(long unsigned int k);
+  unsigned int countCliquesSerial(long unsigned int k);
   void print();
   void print_edges();
   int num_vertices;
@@ -31,7 +31,7 @@ public:
 };
 
 void *countCliquesThread(void *threadarg);
-int countCliquesParalelo(int k, int t, Graph *g);
+unsigned int countCliquesParalelo(int k, int t, Graph *g);
 
 class ThreadDataAlg3 {
 public:
@@ -46,5 +46,5 @@ public:
 };
 
 void *countCliquesThreadBalanceada(void *threadarg);
-int countCliquesParaleloBalanceado(int k, int t, int r, int tentativas,
+unsigned int countCliquesParaleloBalanceado(int k, int t, int r, int tentativas,
                                    Graph *g);

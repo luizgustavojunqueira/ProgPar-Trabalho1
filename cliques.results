@@ -1,41 +1,36 @@
- 
-==============================
-25/09/2024 10:49:46
 citeseer
-Serial 3-cliques: 1166 Time: 0.042025s
-Serial 4-cliques: 255 Time: 0.051211s
-Serial 5-cliques: 46 Time: 0.051788s
-Serial 6-cliques: 4 Time: 0.052148s
-Paralelo 3-cliques: 1166 Time: 0.013227s
-Paralelo 4-cliques: 255 Time: 0.014946s
-Paralelo 5-cliques: 46 Time: 0.015517s
-Paralelo 6-cliques: 4 Time: 0.015541s
+Serial 3-cliques: 1166 Time: 0.022562s
+Serial 4-cliques: 255 Time: 0.027357s
+Serial 5-cliques: 46 Time: 0.029682s
+Serial 6-cliques: 4 Time: 0.027967s
+Paralelo 3-cliques: 1166 Time: 0.006495s
+Paralelo 4-cliques: 255 Time: 0.009003s
+Paralelo 5-cliques: 46 Time: 0.00887s
+Paralelo 6-cliques: 4 Time: 0.008279s
+Paralelo Balanceado 3-cliques: 1166 Time: 0.006162s
+Paralelo Balanceado 4-cliques: 255 Time: 0.00741s
+Paralelo Balanceado 5-cliques: 46 Time: 0.007661s
+Paralelo Balanceado 6-cliques: 4 Time: 0.008358s
 ca_astroph
-Serial 3-cliques: 1351441 Time: 40.7565s
- 
-==============================
-25/09/2024 10:50:59
-citeseer
-Serial 3-cliques: 1166 Time: 0.105024s
-Serial 4-cliques: 255 Time: 0.123291s
-Serial 5-cliques: 46 Time: 0.128856s
-Serial 6-cliques: 4 Time: 0.129352s
-Paralelo 3-cliques: 1166 Time: 0.030655s
-Paralelo 4-cliques: 255 Time: 0.039321s
-Paralelo 5-cliques: 46 Time: 0.04036s
-Paralelo 6-cliques: 4 Time: 0.039654s
-ca_astroph
- 
-==============================
-25/09/2024 10:57:54
-citeseer
-Serial 3-cliques: 1166 Time: 0.041912s
-Serial 4-cliques: 255 Time: 0.051213s
-Serial 5-cliques: 46 Time: 0.05145s
-Serial 6-cliques: 4 Time: 0.051812s
-Paralelo 3-cliques: 1166 Time: 0.01293s
-Paralelo 4-cliques: 255 Time: 0.014885s
-Paralelo 5-cliques: 46 Time: 0.015448s
-Paralelo 6-cliques: 4 Time: 0.015614s
-ca_astroph
-Serial 3-cliques: 1351441 Time: 21.6557s
+Serial 3-cliques: 1351441 Time: 8.41622s
+Serial 4-cliques: 9580415 Time: 96.1669s
+Serial 5-cliques: 64997961 Time: 942.823s
+Serial 6-cliques: 400401488 Time: 8373.02s
+Paralelo 3-cliques: 1351441 Time: 2.01654s
+Paralelo 4-cliques: 9580415 Time: 25.9945s
+Paralelo 5-cliques: 64997961 Time: 259.665s
+Paralelo 6-cliques: 400401488 Time: 2261.67s
+Paralelo Balanceado 3-cliques: 1351441 Time: 2.05777s
+Paralelo Balanceado 4-cliques: 9580415 Time: 25.7144s
+Paralelo Balanceado 5-cliques: 64997961 Time: 262.684s
+Paralelo Balanceado 6-cliques: 400401488 Time: 2305.34s
+dblp
+Serial 3-cliques: 2224385 Time: 18.7617s
+Serial 4-cliques: 16713192 Time: 148.879s
+Serial 5-cliques: 262663639 Time: 2755.16s
+Paralelo 3-cliques: 2224385 Time: 4.00888s
+Paralelo 4-cliques: 16713192 Time: 36.0169s
+Paralelo 5-cliques: 262663639 Time: 711.034s
+Paralelo Balanceado 3-cliques: 2224385 Time: 3.38817s
+Paralelo Balanceado 4-cliques: 16713192 Time: 28.3808s
+Paralelo Balanceado 5-cliques: 262663639 Time: 663.153s

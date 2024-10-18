@@ -6,8 +6,8 @@ Este repositório contém os códigos desenvolvidos para o Trabalho 1 da discipl
 
 ## Alunos
 
-- [Luiz Gustavo Sabadim Spolon Junqueira](github.com/luizgustavojunqueira)
-- [Camila Cardoso Cáceres](github.com/camilacaceres1d)
+- [Luiz Gustavo Sabadim Spolon Junqueira](https://github.com/luizgustavojunqueira)
+- [Camila Cardoso Cáceres](https://github.com/camilacaceres1d)
 
 ## Objetivo
 
